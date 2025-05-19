@@ -586,6 +586,6 @@ FodyWeavers.xsd
 # Additional files built by Visual Studio
 
 # Project database
-./Signature/*
+Signature/
 
 # End of https://www.toptal.com/developers/gitignore/api/visualstudiocode,visualstudio,python
