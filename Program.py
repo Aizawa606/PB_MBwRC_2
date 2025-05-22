@@ -54,7 +54,7 @@ class SignatureRecognizer:
             })
     
     def process_image(self, img_path):
-        """Przetwarza obraz: binarizacja Otsu, skeletonizacja, ekstrakcja minucji"""
+        """Przetwarza obraz: binarizacja Otsu, szkieletyzacja, ekstrakcja minucji"""
         img = cv2.imread(img_path, cv2.IMREAD_GRAYSCALE)
         if img is None:
             raise ValueError(f"Could not read image file {img_path}")
@@ -62,7 +62,7 @@ class SignatureRecognizer:
         # Automatyczna binarizacja: podpis → białe linie na czarnym tle
         _, binary_img = cv2.threshold(img, 0, 255, cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU)
         
-        # Skeletonizacja: redukcja linii podpisu do 1-pikselowej szerokości
+        # Szkieletyzacja: redukcja linii podpisu do 1-pikselowej szerokości
         skeleton = skeletonize(binary_img // 255)
         skeleton_img = img_as_ubyte(skeleton)
         
