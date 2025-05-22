@@ -8,6 +8,8 @@ from tkinter import Tk, filedialog, Button, Label, Frame, messagebox
 from PIL import Image, ImageTk
 from collections import defaultdict
 import math
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+from matplotlib.figure import Figure
 
 class SignatureRecognizer:
     def __init__(self):
@@ -121,7 +123,6 @@ class SignatureGUI:
     def __init__(self, root):
         self.root = root
         self.root.title("Signature Recognition")
-        self.root.geometry("600x500")  # szerokość x wysokość
         self.root.configure(bg="#f0f0f0")  # jasnoszare tło
         self.recognizer = SignatureRecognizer()
         
@@ -155,6 +156,10 @@ class SignatureGUI:
         self.result_label = Label(self.root, text="Select signature to compare", bg="#f0f0f0", font=("Segoe UI", 11))
 
         self.result_label.pack(pady=10)
+
+        # Plot frame
+        self.plot_frame = Frame(self.root, bg="#f0f0f0")
+        self.plot_frame.pack(pady=10)
     
     def load_signature(self):
         """Load signature for comparison"""
@@ -200,22 +205,34 @@ class SignatureGUI:
             self.result_label.config(text=f"Best match: {best_match[0]} (score: {best_match[1]:.2f})")
     
     def plot_results(self, results):
-        """Plot comparison results as bar chart"""
-        if not results:
-            messagebox.showinfo("Info", "No comparison results available")
-            return
-            
-        plt.figure(figsize=(10, 5))
+        """Embed matplotlib bar chart in GUI with dynamic sizing like standalone plot"""
+        # Clear previous contetns
+        for widget in self.plot_frame.winfo_children():
+            widget.destroy()
+
+        # Create a figure with the assumed size as in the matplotlib window
+        fig = Figure(figsize=(10, 5), dpi=100)
+        ax = fig.add_subplot(111)
+
         names = list(results.keys())
         values = list(results.values())
-        
-        plt.bar(names, values)
-        plt.xlabel('Signature Groups')
-        plt.ylabel('Similarity Score')
-        plt.title('Signature Comparison Results')
-        plt.xticks(rotation=45)
-        plt.tight_layout()
-        plt.show()
+
+        ax.bar(names, values)
+        ax.set_xlabel('Signature Groups')
+        ax.set_ylabel('Similarity Score')
+        ax.set_title('Signature Comparison Results')
+        ax.tick_params(axis='x', rotation=45)
+
+        fig.tight_layout()  # Automatically adjust layout (as in a separate window)
+
+        # Insert into GUI
+        canvas = FigureCanvasTkAgg(fig, master=self.plot_frame)
+        canvas.draw()
+        canvas.get_tk_widget().pack()
+
+        # View match result
+        best_match = max(results.items(), key=lambda x: x[1]) if results else (None, 0)
+        self.result_label.config(text=f"Best match: {best_match[0]} (score: {best_match[1]:.2f})")
 
 if __name__ == "__main__":
     root = Tk()
