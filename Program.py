@@ -121,6 +121,8 @@ class SignatureGUI:
     def __init__(self, root):
         self.root = root
         self.root.title("Signature Recognition")
+        self.root.geometry("600x500")  # szerokość x wysokość
+        self.root.configure(bg="#f0f0f0")  # jasnoszare tło
         self.recognizer = SignatureRecognizer()
         
         # GUI setup
@@ -129,15 +131,20 @@ class SignatureGUI:
     def setup_ui(self):
         """Configure user interface"""
         # Button frame
-        button_frame = Frame(self.root)
+        button_frame = Frame(self.root, bg="#f0f0f0")
+        title_label = Label(self.root, text="Signature Recognition System",
+                    font=("Segoe UI", 16, "bold"), bg="#f0f0f0", fg="#333")
+        title_label.pack(pady=10)
         button_frame.pack(pady=10)
         
         # Image selection button
-        self.select_btn = Button(button_frame, text="Select Signature", command=self.load_signature)
+        self.select_btn = Button(button_frame, text="Select Signature", command=self.load_signature,
+        font=("Segoe UI", 10, "bold"), bg="#4CAF50", fg="white", padx=10, pady=5)
         self.select_btn.pack(side="left", padx=5)
         
         # Compare button
-        self.compare_btn = Button(button_frame, text="Compare", command=self.compare_signature, state="disabled")
+        self.compare_btn = Button(button_frame, text="Compare", command=self.compare_signature, state="disabled",
+        font=("Segoe UI", 10, "bold"), bg="#2196F3", fg="white", padx=10, pady=5)
         self.compare_btn.pack(side="left", padx=5)
         
         # Image label
@@ -145,7 +152,8 @@ class SignatureGUI:
         self.image_label.pack(pady=10)
         
         # Result label
-        self.result_label = Label(self.root, text="Select signature to compare")
+        self.result_label = Label(self.root, text="Select signature to compare", bg="#f0f0f0", font=("Segoe UI", 11))
+
         self.result_label.pack(pady=10)
     
     def load_signature(self):
